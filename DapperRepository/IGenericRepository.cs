@@ -20,5 +20,7 @@ namespace DapperRepository
         void Remove(int id);
 
         void Update(TEntity item);
+
+        TEntity FindByName(object name);
     }
 }

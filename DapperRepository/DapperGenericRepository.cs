@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace DapperRepository
 {
@@ -31,7 +32,12 @@ namespace DapperRepository
 
             var properties = GenerateListOfProperties(GetProperties);
 
-            properties.ForEach(prop => { insertQuery.Append($"[{prop}],"); });
+            // properties.ForEach(prop => { insertQuery.Append($"[{prop}],"); });
+
+            for (int i = 1; i < properties.Count; i++)
+            {
+                insertQuery.Append($"[{properties[i]}],");
+            }
 
             insertQuery
 
@@ -39,7 +45,12 @@ namespace DapperRepository
 
              .Append(") VALUES (");
 
-            properties.ForEach(prop => { insertQuery.Append($"@{prop},"); });
+            // properties.ForEach(prop => { insertQuery.Append($"@{prop},"); });
+
+            for (int i = 1; i < properties.Count; i++)
+            {
+                insertQuery.Append($"@{properties[i]},");
+            }
 
             insertQuery
 
@@ -117,6 +128,12 @@ namespace DapperRepository
         public void Remove(int id)
         {
             dbConnection.Query($"DELETE FROM {tableName} WHERE Id=@Id", new { Id = id });
+        }
+
+        public TEntity FindByName(object name)
+        {
+            return dbConnection.Query<TEntity>($"SELECT * FROM {tableName} WHERE Name=@Name", new { Name = name }).FirstOrDefault();
+
         }
     }
 }
