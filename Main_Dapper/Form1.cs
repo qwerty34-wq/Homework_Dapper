@@ -60,7 +60,9 @@ namespace Main_Dapper
                     cat = repoCat.FindByName(form.textBox3.Text);
                 }
 
-                var price = (float)Convert.ToDouble(form.textBox2.Text);
+                var p = Convert.ToDouble(form.textBox2.Text);
+                float price = (float)Math.Round(p, 2);
+
                 Product prod = new Product() { Name = form.textBox1.Text, Price = price, CategoryId = cat.Id };
                 repoProd.Add(prod);
 
@@ -105,7 +107,10 @@ namespace Main_Dapper
                 }
 
                 prod.Name = form.textBox1.Text;
-                prod.Price = (float)Convert.ToDouble(form.textBox2.Text); ;
+
+                var p = Convert.ToDouble(form.textBox2.Text);
+                float price = (float)Math.Round(p, 2);
+                prod.Price = price;
 
                 var category = repoCat.FindByName(form.textBox3.Text);
 
