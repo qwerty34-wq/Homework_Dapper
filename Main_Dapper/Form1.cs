@@ -45,6 +45,13 @@ namespace Main_Dapper
                 if (res == DialogResult.Cancel)
                     return;
 
+                var checkProd = repoProd.FindByName(form.textBox1.Text);
+                if (checkProd != null)
+                {
+                    MessageBox.Show("There is Product with this name.\nTry another name.");
+                    return;
+                }
+
                 var cat = repoCat.FindByName(form.textBox3.Text);
 
                 if (cat == null)
@@ -89,6 +96,13 @@ namespace Main_Dapper
 
                 if (res == DialogResult.Cancel)
                     return;
+
+                var checkProd = repoProd.FindByName(form.textBox1.Text);
+                if (checkProd != null && form.textBox1.Text != _name.ToString())
+                {
+                    MessageBox.Show("There is Product with this name.\nTry another name.");
+                    return;
+                }
 
                 prod.Name = form.textBox1.Text;
                 prod.Price = (float)Convert.ToDouble(form.textBox2.Text); ;
