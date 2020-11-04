@@ -37,78 +37,98 @@ namespace Main_Dapper
         // Insert
         private void Button2_Click(object sender, EventArgs e)
         {
-            Form2 form = new Form2();
-            var res = form.ShowDialog();
-
-            if (res == DialogResult.Cancel)
-                return;
-
-            var cat = repoCat.FindByName(form.textBox3.Text);
-
-            if (cat == null)
+            try
             {
-                repoCat.Add(new Category() { Name = form.textBox3.Text });
-                cat = repoCat.FindByName(form.textBox3.Text);
+                Form2 form = new Form2();
+                var res = form.ShowDialog();
+
+                if (res == DialogResult.Cancel)
+                    return;
+
+                var cat = repoCat.FindByName(form.textBox3.Text);
+
+                if (cat == null)
+                {
+                    repoCat.Add(new Category() { Name = form.textBox3.Text });
+                    cat = repoCat.FindByName(form.textBox3.Text);
+                }
+
+                var price = (float)Convert.ToDouble(form.textBox2.Text);
+                Product prod = new Product() { Name = form.textBox1.Text, Price = price, CategoryId = cat.Id };
+                repoProd.Add(prod);
+
+                Regular();
             }
-
-            var price = (float)Convert.ToDouble(form.textBox2.Text);
-            Product prod = new Product() { Name = form.textBox1.Text, Price = price, CategoryId = cat.Id };
-            repoProd.Add(prod);
-
-            Regular();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         // Update
         private void Button3_Click(object sender, EventArgs e)
         {
-
-            int n = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["ProductId"].Value);
-            var prod = repoProd.FindById(n);
-
-            Form2 form = new Form2();
-
-            var _name = dataGridView1.SelectedRows[0].Cells["ProductName"].Value;
-            var _price = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells["ProductPrice"].Value);
-            var _cat = dataGridView1.SelectedRows[0].Cells["ProductCategory"].Value;
-
-            _price = Math.Round(_price, 2);
-
-            form.textBox1.Text = _name.ToString();
-            form.textBox2.Text = _price.ToString();
-            form.textBox3.Text = _cat.ToString();
-
-            var res = form.ShowDialog();
-
-            if (res == DialogResult.Cancel)
-                return;
-
-            prod.Name = form.textBox1.Text;
-            prod.Price = (float)Convert.ToDouble(form.textBox2.Text); ;
-
-            var category = repoCat.FindByName(form.textBox3.Text);
-
-            if (category == null)
+            try
             {
-                repoCat.Add(new Category() { Name = form.textBox3.Text });
-                category = repoCat.FindByName(form.textBox3.Text);
+                int n = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["ProductId"].Value);
+                var prod = repoProd.FindById(n);
+
+                Form2 form = new Form2();
+
+                var _name = dataGridView1.SelectedRows[0].Cells["ProductName"].Value;
+                var _price = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells["ProductPrice"].Value);
+                var _cat = dataGridView1.SelectedRows[0].Cells["ProductCategory"].Value;
+
+                _price = Math.Round(_price, 2);
+
+                form.textBox1.Text = _name.ToString();
+                form.textBox2.Text = _price.ToString();
+                form.textBox3.Text = _cat.ToString();
+
+                var res = form.ShowDialog();
+
+                if (res == DialogResult.Cancel)
+                    return;
+
+                prod.Name = form.textBox1.Text;
+                prod.Price = (float)Convert.ToDouble(form.textBox2.Text); ;
+
+                var category = repoCat.FindByName(form.textBox3.Text);
+
+                if (category == null)
+                {
+                    repoCat.Add(new Category() { Name = form.textBox3.Text });
+                    category = repoCat.FindByName(form.textBox3.Text);
+                }
+
+                prod.CategoryId = category.Id;
+                repoProd.Update(prod);
+
+                Regular();
             }
-
-            prod.CategoryId = category.Id;
-            repoProd.Update(prod);
-
-            Regular();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         // Delete
         private void Button4_Click(object sender, EventArgs e)
         {
-            int n = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["ProductId"].Value);
+            try
+            {
+                int n = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["ProductId"].Value);
 
-            var prod = repoProd.FindById(n);
+                var prod = repoProd.FindById(n);
 
-            repoProd.Remove(prod.Id);
+                repoProd.Remove(prod.Id);
 
-            Regular();
+                Regular();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -142,8 +162,15 @@ namespace Main_Dapper
 
         private void Regular()
         {
-            SelectAll();
-            CheckIfCategoryUsed();
+            try
+            {
+                SelectAll();
+                CheckIfCategoryUsed();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
