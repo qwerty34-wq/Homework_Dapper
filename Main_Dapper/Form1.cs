@@ -31,7 +31,7 @@ namespace Main_Dapper
         // Select
         private void Button1_Click(object sender, EventArgs e)
         {
-            SelectAll();
+            Regular();
         }
 
         // Insert
@@ -55,13 +55,48 @@ namespace Main_Dapper
             Product prod = new Product() { Name = form.textBox1.Text, Price = price, CategoryId = cat.Id };
             repoProd.Add(prod);
 
-            SelectAll();
+            Regular();
         }
 
         // Update
         private void Button3_Click(object sender, EventArgs e)
         {
 
+            int n = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["ProductId"].Value);
+            var prod = repoProd.FindById(n);
+
+            Form2 form = new Form2();
+
+            var _name = dataGridView1.SelectedRows[0].Cells["ProductName"].Value;
+            var _price = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells["ProductPrice"].Value);
+            var _cat = dataGridView1.SelectedRows[0].Cells["ProductCategory"].Value;
+
+            _price = Math.Round(_price, 2);
+
+            form.textBox1.Text = _name.ToString();
+            form.textBox2.Text = _price.ToString();
+            form.textBox3.Text = _cat.ToString();
+
+            var res = form.ShowDialog();
+
+            if (res == DialogResult.Cancel)
+                return;
+
+            prod.Name = form.textBox1.Text;
+            prod.Price = (float)Convert.ToDouble(form.textBox2.Text); ;
+
+            var category = repoCat.FindByName(form.textBox3.Text);
+
+            if (category == null)
+            {
+                repoCat.Add(new Category() { Name = form.textBox3.Text });
+                category = repoCat.FindByName(form.textBox3.Text);
+            }
+
+            prod.CategoryId = category.Id;
+            repoProd.Update(prod);
+
+            Regular();
         }
 
         // Delete
@@ -73,7 +108,7 @@ namespace Main_Dapper
 
             repoProd.Remove(prod.Id);
 
-            SelectAll();
+            Regular();
         }
 
 
@@ -87,6 +122,28 @@ namespace Main_Dapper
             pc = pc.ToList();
 
             dataGridView1.DataSource = pc;
+        }
+
+        private void CheckIfCategoryUsed()
+        {
+            var cats = repoCat.GetAll();
+
+            foreach (var cat in cats)
+            {
+                var elem = repoProd.GetAll().Where(n => n.CategoryId == cat.Id);
+
+                if (elem.Count() == 0)
+                {
+                    repoCat.Remove(cat.Id);
+                }
+            }
+
+        }
+
+        private void Regular()
+        {
+            SelectAll();
+            CheckIfCategoryUsed();
         }
 
 
